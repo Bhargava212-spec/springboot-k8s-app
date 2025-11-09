@@ -12,6 +12,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 git 'https://github.com/Bhargava212-spec/springboot-k8s-app'
+                credentialsId: 'github-token'
             }
         }
 
