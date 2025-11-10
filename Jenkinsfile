@@ -4,7 +4,6 @@ pipeline {
     environment {
         IMAGE_NAME = "springboot-app"
         IMAGE_TAG = "v1"
-        DOCKER_REGISTRY = "localhost:5000"
         DEPLOYMENT_FILE = "deployment.yaml"
     }
 
@@ -12,23 +11,22 @@ pipeline {
         stage('Checkout') {
             steps {
                 git(
-                    branch: 'master',
+                    branch: 'main',
                     url: 'https://github.com/Bhargava212-spec/springboot-k8s-app',
                     credentialsId: 'github-creds'
                 )
             }
         }
 
-        stage('Build Docker Image') {
+        stage('Set Minikube Docker Env') {
             steps {
-                sh "docker build -t ${IMAGE_NAME}:${IMAGE_TAG} ."
+                sh "eval \$(minikube docker-env)"
             }
         }
 
-        stage('Push to Minikube Registry') {
+        stage('Build Docker Image') {
             steps {
-                sh "docker tag ${IMAGE_NAME}:${IMAGE_TAG} ${DOCKER_REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG}"
-                sh "docker push ${DOCKER_REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG}"
+                sh "docker build -t ${IMAGE_NAME}:${IMAGE_TAG} ."
             }
         }
 
