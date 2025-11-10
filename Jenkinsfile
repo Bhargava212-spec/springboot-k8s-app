@@ -5,6 +5,7 @@ pipeline {
         IMAGE_NAME = "springboot-app"
         IMAGE_TAG = "v1"
         DEPLOYMENT_FILE = "deployment.yaml"
+        KUBECONFIG = "/root/.kube/config"
     }
 
     stages {
