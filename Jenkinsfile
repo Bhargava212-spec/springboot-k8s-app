@@ -31,6 +31,17 @@ pipeline {
             }
         }
 
+
+        stage('Fix kubeconfig paths') {
+            steps {
+                sh '''
+                    # Replace Windows paths with Linux paths in kubeconfig
+                    sed -i 's|C:\\\\Users\\\\BhargavaMakkena|/root|g' ${KUBECONFIG}
+                '''
+            }
+        }
+
+
         stage('Deploy to Minikube') {
             steps {
                 sh "kubectl apply -f ${DEPLOYMENT_FILE}"
