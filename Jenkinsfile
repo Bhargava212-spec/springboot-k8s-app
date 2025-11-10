@@ -42,6 +42,23 @@ pipeline {
         }
 
 
+        stage('Validate Minikube Setup') {
+            steps {
+                sh '''
+                    echo "Validating Minikube certs and kubeconfig..."
+                    if [ ! -f /root/.minikube/profiles/minikube/client.crt ] || \
+                       [ ! -f /root/.minikube/profiles/minikube/client.key ] || \
+                       [ ! -f /root/.minikube/ca.crt ]; then
+                        echo "ERROR: Minikube certs missing! Please mount ~/.minikube and ~/.kube into Jenkins container."
+                        exit 1
+                    fi
+                    echo "Validation successful: Minikube certs found."
+                '''
+            }
+        }
+
+
+
         stage('Deploy to Minikube') {
             steps {
                 sh "kubectl apply -f ${DEPLOYMENT_FILE}"
