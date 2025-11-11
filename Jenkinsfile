@@ -5,23 +5,14 @@ pipeline {
         IMAGE_NAME = "springboot-app"
         IMAGE_TAG = "v1"
         DEPLOYMENT_FILE = "deployment.yaml"
-        KUBECONFIG = "/root/.kube/config"
     }
 
     stages {
         stage('Checkout') {
             steps {
-                git(
-                    branch: 'master',
+                git branch: 'master',
                     url: 'https://github.com/Bhargava212-spec/springboot-k8s-app',
                     credentialsId: 'github-creds'
-                )
-            }
-        }
-
-        stage('Set Minikube Docker Env') {
-            steps {
-                sh "eval \$(minikube docker-env)"
             }
         }
 
@@ -31,38 +22,19 @@ pipeline {
             }
         }
 
-
-        stage('Fix kubeconfig paths') {
-            steps {
-                sh '''
-                    # Replace Windows paths with Linux paths in kubeconfig
-                    sed -i 's|C:\\\\Users\\\\BhargavaMakkena|/root|g' ${KUBECONFIG}
-                '''
-            }
-        }
-
-
-        stage('Validate Minikube Setup') {
-            steps {
-                sh '''
-                    echo "Validating Minikube certs and kubeconfig..."
-                    if [ ! -f /root/.minikube/profiles/minikube/client.crt ] || \
-                       [ ! -f /root/.minikube/profiles/minikube/client.key ] || \
-                       [ ! -f /root/.minikube/ca.crt ]; then
-                        echo "ERROR: Minikube certs missing! Please mount ~/.minikube and ~/.kube into Jenkins container."
-                        exit 1
-                    fi
-                    echo "Validation successful: Minikube certs found."
-                '''
-            }
-        }
-
-
-
-        stage('Deploy to Minikube') {
+        stage('Deploy to Kubernetes') {
             steps {
                 sh "kubectl apply -f ${DEPLOYMENT_FILE}"
             }
+        }
+    }
+
+    post {
+        success {
+            echo "Deployment successful!"
+        }
+        failure {
+            echo "Pipeline failed!"
         }
     }
 }
