@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: springboot
-          image: springboot-app:v1   # ✅ Matches Jenkins build
+          image: springboot-app:v1
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
@@ -31,4 +31,4 @@ spec:
     - protocol: TCP
       port: 8080
       targetPort: 8080
-      nodePort: 30007   # ✅ Optional, can remove for auto-assign
+      nodePort: 30007

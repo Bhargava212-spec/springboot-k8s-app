@@ -18,13 +18,13 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                sh "docker build -t ${IMAGE_NAME}:${IMAGE_TAG} ."
+                bat "docker build -t ${IMAGE_NAME}:${IMAGE_TAG} ."
             }
         }
 
         stage('Deploy to Kubernetes') {
             steps {
-                sh "kubectl apply -f ${DEPLOYMENT_FILE}"
+                bat "kubectl apply -f ${DEPLOYMENT_FILE}"
             }
         }
     }
